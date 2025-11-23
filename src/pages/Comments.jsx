@@ -8,18 +8,36 @@ const Comments = () => {
   const { id } = useParams();
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchComments = async () => {
-      const res = await fetch(`${BASE_URL}/posts/${id}/comments`);
-      const data = await res.json();
-      setComments(data);
-      setLoading(false);
+      setLoading(true);
+      setError("");
+
+      try {
+        const res = await fetch(`${BASE_URL}/posts/${id}/comments`);
+
+        if (!res.ok) {
+          throw new Error("Failed to load comments");
+        }
+
+        const data = await res.json();
+        setComments(data);
+      } catch (err) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchComments();
   }, [id]);
 
   if (loading) return <Loader />;
+
+  if (error)
+    return <p style={{ color: "red", marginTop: "1rem" }}>⚠️ Error: {error}</p>;
 
   return (
     <div style={{ marginTop: "2rem" }}>
