@@ -1,16 +1,40 @@
-/* ============ Base ============ */
+/* ============ Base (Light Theme) ============ */
 :root {
   --font-main: "Inter", system-ui, sans-serif;
+
+  /* Основные цвета */
   --color-bg: #fafafa;
   --color-text: #222;
   --color-primary: #0077ff;
   --color-accent: #ffb400;
   --color-border: #e5e5e5;
   --color-muted: #888;
+
+  /* UI */
   --radius: 10px;
   --transition: 0.25s ease;
+
+  /* Посты и модалки */
+  --card-bg: #fff;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --modal-bg: #fff;
 }
 
+/* ============ Dark Theme ============ */
+.theme-dark {
+  --color-bg: #1e1e1e;
+  --color-text: #eee;
+  --color-primary: #4aa3ff;
+  --color-accent: #ffb400;
+  --color-border: #333;
+  --color-muted: #aaa;
+
+  --card-bg: #2c2c2c;
+  --card-shadow: rgba(0, 0, 0, 0.4);
+  --modal-bg: #2c2c2c;
+}
+
+/* ============ Global ============ */
 * {
   box-sizing: border-box;
 }
@@ -27,7 +51,7 @@ body {
 
 /* ============ Layout & Header ============ */
 .header {
-  background: #fff;
+  background: var(--card-bg);
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
@@ -68,34 +92,43 @@ body {
   color: var(--color-primary);
 }
 
-.main {
-  padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
 /* ============ Main & Container ============ */
 main {
+  min-height: 100vh; /* на всю высоту окна */
+  width: 100vw; /* на всю ширину окна */
   padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+  background: var(--color-bg);
+  display: flex;
+  justify-content: center; /* центрируем контент по горизонтали */
 }
 
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
+  width: 100%;
+}
+
+h2 {
+  color: var(--color-primary); /* для акцента */
+}
+
+p,
+li,
+span,
+div {
+  color: var(--color-text); /* основной текст под тему */
 }
 
 /* ============ Buttons ============ */
 button,
 input[type="submit"] {
   background: var(--color-primary);
-  border: none;
-  color: white;
-  padding: 0.6rem 1.2rem;
+  color: #fff;
   border-radius: var(--radius);
+  border: none;
   cursor: pointer;
+  padding: 0.6rem 1.2rem;
   font-size: 1rem;
   transition: background var(--transition), transform var(--transition);
 }
@@ -125,82 +158,27 @@ a:hover {
 }
 
 .post-card {
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 5px var(--card-shadow);
   transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .post-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 10px var(--card-shadow);
 }
 
 .post-card h3 {
-  margin-top: 0;
   color: var(--color-primary);
-  font-size: 1.1rem;
+  margin-top: 0;
 }
 
 .post-card p {
   color: var(--color-muted);
   font-size: 0.95rem;
-}
-
-/* ============ Enhanced Search UI ============ */
-.filters {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-}
-
-.search-input {
-  width: 100%;
-  max-width: 400px;
-  padding: 0.7rem 1rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-border);
-  font-size: 1rem;
-  transition: border var(--transition), box-shadow var(--transition);
-}
-
-.search-input:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
-  outline: none;
-}
-
-/* Label above search */
-.search-label {
-  font-size: 0.85rem;
-  color: var(--color-muted);
-  margin-bottom: 0.3rem;
-  display: block;
-}
-
-/* Empty state */
-.empty {
-  text-align: center;
-  font-size: 1rem;
-  color: var(--color-muted);
-  margin-top: 1rem;
-}
-
-/* ============ Post Detail ============ */
-.page-post {
-  background: #fff;
-  padding: 2rem;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-}
-
-.page-post h2 {
-  color: var(--color-primary);
 }
 
 /* ============ Forms (Contact) ============ */
@@ -219,6 +197,8 @@ textarea {
   font-size: 1rem;
   font-family: var(--font-main);
   transition: border var(--transition), box-shadow var(--transition);
+  background: var(--card-bg);
+  color: var(--color-text);
 }
 
 input:focus,
@@ -247,18 +227,17 @@ textarea:focus {
   color: var(--color-primary);
 }
 
-/* ============ Utility ============ */
-h2 {
-  margin-top: 0;
+/* ============ Post Detail ============ */
+.page-post {
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 3px 10px var(--card-shadow);
+  border-radius: var(--radius);
+  padding: 2rem;
 }
 
-p {
-  margin: 0.5rem 0;
-}
-
-/* Subtle fade animation for page transitions */
-section {
-  animation: fadeIn 0.4s ease;
+.page-post h2 {
+  color: var(--color-primary);
 }
 
 /* ============ Modal Styles ============ */
@@ -277,14 +256,15 @@ section {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--modal-bg);
+  color: var(--color-text);
   border-radius: var(--radius);
   padding: 2rem;
   max-width: 600px;
   width: 90%;
   max-height: 80%;
   overflow-y: auto;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 15px var(--card-shadow);
   position: relative;
   animation: slideUp 0.3s ease;
 }
@@ -319,7 +299,53 @@ section {
   transform: scale(1.1);
 }
 
-/* Animations for modal */
+/* ============ Utility ============ */
+h2 {
+  margin-top: 0;
+}
+
+p {
+  margin: 0.5rem 0;
+}
+
+/* Subtle fade animation for page transitions */
+section {
+  animation: fadeIn 0.4s ease;
+}
+
+.comments-wrapper {
+  margin-top: 2rem;
+}
+
+.comment-card {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  transition: background 0.3s, border 0.3s;
+}
+
+.comment-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-primary);
+}
+
+.comment-card p {
+  margin: 0.25rem 0;
+  color: var(--color-text);
+}
+
+.comment-card small {
+  color: var(--color-muted);
+}
+
+.comments-error {
+  color: red;
+  margin-top: 1rem;
+}
+
+/* ============ Animations ============ */
 @keyframes slideUp {
   from {
     opacity: 0;

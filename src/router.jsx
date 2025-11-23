@@ -7,6 +7,7 @@ import Post from "./pages/Post";
 import Posts from "./pages/Posts";
 import NotFound from "./pages/NotFound";
 import Comments from "./pages/Comments";
+import ProtectPost from "./components/ProtectPost";
 
 export const router = createBrowserRouter([
   {
@@ -18,14 +19,23 @@ export const router = createBrowserRouter([
         path: "posts",
         children: [
           { index: true, element: <Posts /> },
+
           {
             path: ":id",
-            element: <Post />,
-            children: [{ path: "comments", element: <Comments /> }],
+            element: (
+              <ProtectPost>
+                <Post />
+              </ProtectPost>
+            ),
+            children: [
+              {
+                path: "comments",
+                element: <Comments />,
+              },
+            ],
           },
         ],
       },
-
       { path: "about", element: <About /> },
       { path: "contact", element: <Contact /> },
       { path: "*", element: <NotFound /> },
