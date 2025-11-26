@@ -4,7 +4,7 @@ const ProtectPost = ({ children }) => {
   const { id } = useParams();
   const postId = Number(id);
 
-  if (postId > 10) {
+  if (postId > 5) {
     return <Navigate to="/posts" replace />;
   }
 

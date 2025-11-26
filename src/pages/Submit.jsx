@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const Contact = () => {
-  const [form, setForm] = useState({ name: "", message: "" });
+const Submit = () => {
+  const [form, setForm] = useState({ title: "", body: "" });
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
@@ -27,9 +27,10 @@ const Contact = () => {
 
       const data = await res.json();
       setResponse(data);
-      setForm({ name: "", message: "" });
-    } catch (err) {
-      setError("Failed to send message. Try again.");
+      setForm({ title: "", body: "" });
+    } catch (error) {
+      setError("Failed to send post. Try again.");
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -37,20 +38,21 @@ const Contact = () => {
 
   return (
     <section className="container">
-      <h2>Contact</h2>
+      <h2>Submit your post</h2>
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Your name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          placeholder="Title"
+          value={form.title}
+          onChange={(e) => setForm({ ...form, title: e.target.value })}
           required
         />
+
         <textarea
-          placeholder="Message"
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
+          placeholder="Post content"
+          value={form.body}
+          onChange={(e) => setForm({ ...form, body: e.target.value })}
           required
         />
 
@@ -59,17 +61,15 @@ const Contact = () => {
         </button>
       </form>
 
-      {/* Show success */}
       {response && (
         <p style={{ color: "green", marginTop: "1rem" }}>
-          Message sent! ID: {response.id}
+          Post submitted! ID: {response.id}
         </p>
       )}
 
-      {/* Show error */}
       {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
     </section>
   );
 };
 
-export default Contact;
+export default Submit;

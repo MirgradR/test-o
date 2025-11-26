@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme";
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
-
   return (
     <header className={`header ${theme}`}>
       <div className="container header-inner">
@@ -14,9 +13,8 @@ const Header = () => {
           </NavLink>
           <NavLink to="/posts">Posts</NavLink>
           <NavLink to="/about">About</NavLink>
-          <NavLink to="/contact">Contact</NavLink>
+          <NavLink to="/submit">Submit</NavLink>
         </nav>
-
         <button onClick={toggleTheme} style={{ marginLeft: "1rem" }}>
           {theme === "light" ? "Dark Mode" : "Light Mode"}
         </button>

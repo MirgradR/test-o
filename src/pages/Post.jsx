@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Outlet } from "react-router-dom";
-import Loader from "../components/Loader";
-
-const BASE_URL = "https://jsonplaceholder.typicode.com";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 
 const Post = () => {
   const { id } = useParams();
@@ -18,7 +15,9 @@ const Post = () => {
         setLoading(true);
         setError("");
 
-        const res = await fetch(`${BASE_URL}/posts/${id}`);
+        const res = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/${id}`
+        );
 
         if (!res.ok) {
           throw new Error("Failed to load post");
@@ -36,17 +35,15 @@ const Post = () => {
     fetchPost();
   }, [id]);
 
-  if (loading) return <Loader />;
-
+  if (loading) return <p>Loading....</p>;
+  if (!post) return <p>Post not found</p>;
   if (error)
     return (
       <p style={{ color: "red", fontSize: "1.1rem" }}>⚠️ Error: {error}</p>
     );
 
-  if (!post) return <p>Post not found.</p>;
-
   return (
-    <section className="container page-post">
+    <div className="container page-post">
       <button onClick={() => navigate(-1)} style={{ marginBottom: "1rem" }}>
         ← Back
       </button>
@@ -55,7 +52,7 @@ const Post = () => {
       <p>{post.body}</p>
 
       <Outlet />
-    </section>
+    </div>
   );
 };
 
