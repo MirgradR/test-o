@@ -1,8 +1,5 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Loader from "../components/Loader";
-
-const BASE_URL = "https://jsonplaceholder.typicode.com";
 
 const Comments = () => {
   const { id } = useParams();
@@ -16,7 +13,9 @@ const Comments = () => {
       setError("");
 
       try {
-        const res = await fetch(`${BASE_URL}/posts/${id}/comments`);
+        const res = await fetch(
+          `https://jsonplaceholder.typicode.com/posts/${id}/comments`
+        );
         if (!res.ok) throw new Error("Failed to load comments");
 
         const data = await res.json();
@@ -31,7 +30,7 @@ const Comments = () => {
     fetchComments();
   }, [id]);
 
-  if (loading) return <Loader />;
+  if (loading) return <p>Loading....</p>;
 
   if (error) return <p className="comments-error">⚠️ Error: {error}</p>;
 

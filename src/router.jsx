@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Post from "./pages/Post";
 import Posts from "./pages/Posts";
+import Post from "./pages/Post";
+import ProtectPost from "./components/ProtectPost";
 import NotFound from "./pages/NotFound";
 import Comments from "./pages/Comments";
-import ProtectPost from "./components/ProtectPost";
+import About from "./pages/About";
+import Submit from "./pages/Submit";
 
 export const router = createBrowserRouter([
   {
@@ -18,8 +18,7 @@ export const router = createBrowserRouter([
       {
         path: "posts",
         children: [
-          { index: true, element: <Posts /> },
-
+          { index: true, element: <Posts /> }, // список постов
           {
             path: ":id",
             element: (
@@ -37,7 +36,7 @@ export const router = createBrowserRouter([
         ],
       },
       { path: "about", element: <About /> },
-      { path: "contact", element: <Contact /> },
+      { path: "submit", element: <Submit /> },
       { path: "*", element: <NotFound /> },
     ],
   },

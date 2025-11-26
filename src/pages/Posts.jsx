@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import PostCard from "../components/PostCard";
-import Loader from "../components/Loader";
-
-const BASE_URL = "https://jsonplaceholder.typicode.com";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Posts = () => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") || "";
+
+  console.log(search);
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const search = searchParams.get("search") || "";
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchParams(value ? { search: value } : {});
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,7 +26,9 @@ const Posts = () => {
 
         const query = search ? `?q=${search}` : "";
 
-        const res = await fetch(`${BASE_URL}/posts${query}`);
+        const res = await fetch(
+          `https://jsonplaceholder.typicode.com/posts${query}`
+        );
         if (!res.ok) throw new Error("Failed to fetch posts");
 
         const data = await res.json();
@@ -36,46 +43,38 @@ const Posts = () => {
     fetchPosts();
   }, [search]);
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-
-    setSearchParams(value ? { search: value } : {});
-  };
-
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <section className="container">
-      <h2>Posts</h2>
+    <div className="container">
+      <h2>Последние посты</h2>
 
       <input
         type="text"
-        placeholder="Search posts via API..."
+        placeholder="Search posts..."
+        className="search-input"
         value={search}
         onChange={handleSearch}
-        className="search-input"
       />
 
-      {posts.length === 0 && (
-        <p style={{ marginTop: "1rem", color: "#888" }}>
-          No posts found for "<b>{search}</b>"
-        </p>
-      )}
-
-      <div className="posts">
-        {loading ? (
-          <Loader />
-        ) : (
-          posts.map((post) => <PostCard key={post.id} post={post} />)
+      <section className="posts">
+        {posts.length === 0 && !loading && (
+          <p style={{ marginTop: "1rem", color: "#888" }}>No posts found"</p>
         )}
-      </div>
 
-      {/* {selectedPost && (
-        <Modal onClose={() => setSelectedPost(null)}>
-          <PostModalContent postId={selectedPost} />
-        </Modal>
-      )} */}
-    </section>
+        {loading ? (
+          <p>Loading....</p>
+        ) : (
+          posts.map((post) => (
+            <PostCard
+              key={post.id}
+              post={post}
+              onClick={() => navigate(`/posts/${post.id}/comments`)}
+            />
+          ))
+        )}
+      </section>
+    </div>
   );
 };
 

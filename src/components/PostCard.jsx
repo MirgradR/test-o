@@ -1,14 +1,9 @@
-import { Link } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
-
-const PostCard = ({ post }) => {
-  const { theme } = useTheme();
-
+const PostCard = ({ post, onClick }) => {
   return (
-    <article className={`post-card ${theme}`}>
+    <article className="post-card">
       <h3>{post.title}</h3>
-      <p>{post.body.slice(0, 100)}...</p>
-      <Link to={`/posts/${post.id}/comments`}>Read more</Link>
+      <p>{post.body.slice(0, 50)}...</p>
+      <button onClick={onClick}>Read more</button>
     </article>
   );
 };
