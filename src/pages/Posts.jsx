@@ -7,8 +7,6 @@ const Posts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
 
-  console.log(search);
-
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,9 +24,7 @@ const Posts = () => {
 
         const query = search ? `?q=${search}` : "";
 
-        const res = await fetch(
-          `https://jsonplaceholder.typicode.com/posts${query}`
-        );
+        const res = await fetch(`https://jsonplaceholder.typicode.com/posts${query}`);
         if (!res.ok) throw new Error("Failed to fetch posts");
 
         const data = await res.json();
