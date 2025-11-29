@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 
-const Post = () => {
-  const { id } = useParams();
+export interface Post {
+    id: number;
+    userId: number;
+    title: string;
+    body: string;
+}
+
+const PostPage = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -23,16 +30,19 @@ const Post = () => {
           throw new Error("Failed to load post");
         }
 
-        const data = await res.json();
+        const data: Post = await res.json();
         setPost(data);
       } catch (err) {
-        setError(err.message || "Something went wrong");
+        const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPost();
+    if (id) {
+      fetchPost();
+    }
   }, [id]);
 
   if (loading) return <p>Loading....</p>;
@@ -56,4 +66,5 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default PostPage;
+

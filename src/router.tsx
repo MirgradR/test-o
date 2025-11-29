@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Posts from "./pages/Posts";
-import Post from "./pages/Post";
+import PostPage from "./pages/Post";
 import ProtectPost from "./components/ProtectPost";
 import NotFound from "./pages/NotFound";
 import Comments from "./pages/Comments";
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
             path: ":id",
             element: (
               <ProtectPost>
-                <Post />
+                <PostPage />
               </ProtectPost>
             ),
             children: [
@@ -41,3 +41,4 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+

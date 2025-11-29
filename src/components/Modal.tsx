@@ -1,9 +1,15 @@
-import { useRef } from "react";
+import { useRef, ReactNode } from "react";
 import ReactDOM from "react-dom";
 import { useClickOutside } from "../hooks/useClickOutside";
 
-const Modal = ({ children, onClose }) => {
-  const modalRef = useRef();
+interface ModalProps {
+  children: ReactNode;
+  onClose: () => void;
+}
+
+const Modal = ({ children, onClose }: ModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
   useClickOutside(modalRef, onClose);
 
   return ReactDOM.createPortal(
@@ -20,3 +26,4 @@ const Modal = ({ children, onClose }) => {
 };
 
 export default Modal;
+

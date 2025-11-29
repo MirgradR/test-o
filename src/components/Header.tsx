@@ -16,7 +16,7 @@ const Header = () => {
           <NavLink to="/submit">Submit</NavLink>
         </nav>
         <button onClick={toggleTheme} style={{ marginLeft: "1rem" }}>
-          {theme === "light" ? "Dark Mode" : "Light Mode"}
+          {theme === "theme-light" ? "Dark Mode" : "Light Mode"}
         </button>
       </div>
     </header>
@@ -24,3 +24,4 @@ const Header = () => {
 };
 
 export default Header;
+

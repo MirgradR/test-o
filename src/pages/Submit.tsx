@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
+
+interface SubmitResponse {
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
+}
 
 const Submit = () => {
-  const [form, setForm] = useState({ title: "", body: "" });
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+  const [form, setForm] = useState<{ title: string; body: string }>({ title: "", body: "" });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [response, setResponse] = useState<SubmitResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setResponse(null);
@@ -25,15 +32,23 @@ const Submit = () => {
         throw new Error("Server error");
       }
 
-      const data = await res.json();
+      const data: SubmitResponse = await res.json();
       setResponse(data);
       setForm({ title: "", body: "" });
-    } catch (error) {
+    } catch (err) {
       setError("Failed to send post. Try again.");
-      console.log(error);
+      console.log(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, title: e.target.value });
+  };
+
+  const handleBodyChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setForm({ ...form, body: e.target.value });
   };
 
   return (
@@ -45,14 +60,14 @@ const Submit = () => {
           type="text"
           placeholder="Title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={handleTitleChange}
           required
         />
 
         <textarea
           placeholder="Post content"
           value={form.body}
-          onChange={(e) => setForm({ ...form, body: e.target.value })}
+          onChange={handleBodyChange}
           required
         />
 
@@ -73,3 +88,4 @@ const Submit = () => {
 };
 
 export default Submit;
+

@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Post } from "./Post";
 
 const Posts = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchParams(value ? { search: value } : {});
   };
@@ -27,10 +28,11 @@ const Posts = () => {
         const res = await fetch(`https://jsonplaceholder.typicode.com/posts${query}`);
         if (!res.ok) throw new Error("Failed to fetch posts");
 
-        const data = await res.json();
+        const data: Post[] = await res.json();
         setPosts(data);
       } catch (err) {
-        setError(err.message || "Something went wrong");
+        const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -55,7 +57,7 @@ const Posts = () => {
 
       <section className="posts">
         {posts.length === 0 && !loading && (
-          <p style={{ marginTop: "1rem", color: "#888" }}>No posts found"</p>
+          <p style={{ marginTop: "1rem", color: "#888" }}>No posts found</p>
         )}
 
         {loading ? (
@@ -75,3 +77,4 @@ const Posts = () => {
 };
 
 export default Posts;
+

@@ -1,4 +1,11 @@
-const PostCard = ({ post, onClick }) => {
+import {Post} from "../pages/Post";
+
+interface PostCardProps {
+  post: Post;
+  onClick: () => void;
+}
+
+const PostCard = ({ post, onClick }: PostCardProps) => {
   return (
     <article className="post-card">
       <h3>{post.title}</h3>
@@ -9,3 +16,4 @@ const PostCard = ({ post, onClick }) => {
 };
 
 export default PostCard;
+

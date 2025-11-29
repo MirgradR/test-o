@@ -1,11 +1,19 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+export interface Comment {
+    id: number;
+    postId: number;
+    name: string;
+    email: string;
+    body: string;
+}
+
 const Comments = () => {
-  const { id } = useParams();
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { id } = useParams<{ id: string }>();
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -18,16 +26,19 @@ const Comments = () => {
         );
         if (!res.ok) throw new Error("Failed to load comments");
 
-        const data = await res.json();
+        const data: Comment[] = await res.json();
         setComments(data);
       } catch (err) {
-        setError(err.message || "Something went wrong");
+        const errorMessage = err instanceof Error ? err.message : "Something went wrong";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchComments();
+    if (id) {
+      fetchComments();
+    }
   }, [id]);
 
   if (loading) return <p>Loading....</p>;
@@ -49,3 +60,4 @@ const Comments = () => {
 };
 
 export default Comments;
+
