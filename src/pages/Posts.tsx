@@ -2,6 +2,7 @@ import { useEffect, useState, ChangeEvent } from "react";
 import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
+import { SunIcon } from '../components/icons/SunIcon';
 
 const Posts = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [hightlightPosts, setHightlightPosts] = useState(false);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -47,13 +49,19 @@ const Posts = () => {
     <div className="container">
       <h2>Последние посты</h2>
 
-      <input
-        type="text"
-        placeholder="Search posts..."
-        className="search-input"
-        value={search}
-        onChange={handleSearch}
-      />
+      <div className='posts-interactive'>
+        <input
+          type="text"
+          placeholder="Search posts..."
+          className="search-input"
+          value={search}
+          onChange={handleSearch}
+        />
+
+        <button onClick={() => setHightlightPosts(p => !p)}>
+          <SunIcon color={hightlightPosts ? 'lightgreen' : 'white'} />
+        </button>
+      </div>
 
       <section className="posts">
         {posts.length === 0 && !loading && (
@@ -63,13 +71,18 @@ const Posts = () => {
         {loading ? (
           <p>Loading....</p>
         ) : (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onClick={() => navigate(`/posts/${post.id}/comments`)}
-            />
-          ))
+          posts.map((post, idx) => {
+            const isOddPost = idx % 2 === 0;
+
+            return (
+              <PostCard
+                key={post.id}
+                post={post}
+                highlight={isOddPost && hightlightPosts}
+                onClick={() => navigate(`/posts/${post.id}/comments`)}
+              />
+            )
+          })
         )}
       </section>
     </div>
