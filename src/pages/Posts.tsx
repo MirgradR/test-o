@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
@@ -63,9 +63,11 @@ const Posts = () => {
           onChange={handleSearch}
         />
 
-        <button onClick={() => setHightlightPosts(p => !p)}>
-          <SunIcon color={hightlightPosts ? 'lightgreen' : 'white'} />
-        </button>
+        <HightlightBtn
+          onClick={() => setHightlightPosts(p => !p)}
+          paintIcon={hightlightPosts}
+        />
+
         <button onClick={() => setShowPostsCount(p => !p)}>
           <CountIcon color={showPostsCount ? 'lightgreen' : 'white'} />
         </button>
@@ -96,6 +98,20 @@ const Posts = () => {
     </div>
   );
 };
+
+interface HightlightBtnProps {
+  onClick: () => void;
+  paintIcon?: boolean;
+}
+
+function HightlightBtn({ onClick, paintIcon }: HightlightBtnProps) {
+
+  return React.createElement(
+    'button',
+    { onClick },
+    React.createElement(SunIcon, { color: paintIcon ? 'lightgreen' : 'white' })
+  );
+}
 
 export default Posts;
 
