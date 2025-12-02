@@ -3,6 +3,7 @@ import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
 import { SunIcon } from '../components/icons/SunIcon';
+import { CountIcon } from '../components/icons/CountIcon';
 
 const Posts = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const Posts = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [hightlightPosts, setHightlightPosts] = useState(false);
+  const [showPostsCount, setShowPostsCount] = useState(false);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -47,7 +49,10 @@ const Posts = () => {
 
   return (
     <div className="container">
-      <h2>Последние посты</h2>
+      <h2>
+        {showPostsCount && `${posts.length} - `}
+        Последние посты
+      </h2>
 
       <div className='posts-interactive'>
         <input
@@ -60,6 +65,9 @@ const Posts = () => {
 
         <button onClick={() => setHightlightPosts(p => !p)}>
           <SunIcon color={hightlightPosts ? 'lightgreen' : 'white'} />
+        </button>
+        <button onClick={() => setShowPostsCount(p => !p)}>
+          <CountIcon color={showPostsCount ? 'lightgreen' : 'white'} />
         </button>
       </div>
 
