@@ -2,17 +2,39 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Init:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v5
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+     # 1. Клонирование кода
+      - uses: actions/checkout@v5
+
+      # 2. Установка Node.js
+      - name: Start the Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # 3. Установка зависимостей
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Сборка проекта
+      - name: Build the project
+        run: npm run build
+
+      # 5. Запускаем сборку проеёкта
+      - name: Build the project
+        run: npm run build
+        
+      # 6 Запуск тестов и линтинга
+      - name: Run tests
+        run: npm run test
+      - name: Run linting
+        run: npm run lint
+      - name: Run tests coverage
+        run: npm run test:coverage
+      - name: Run tests UI
+        run: npm run test:ui
