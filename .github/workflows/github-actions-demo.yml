@@ -2,24 +2,25 @@ name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
-  Init:
+  test-and-build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [24.x]  # Используем одну стабильную версию для скорости
     steps:
      # 1. Клонирование кода
       - uses: actions/checkout@v5
 
-      # 2. Установка Node.js
-      - name: Start the Node.js ${{ matrix.node-version }}
+      # 2. Установка Node.js с кешированием
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       # 3. Установка зависимостей
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # 4. Сборка проекта
       - name: Build the project
