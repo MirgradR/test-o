@@ -1,49 +1,39 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useGetCommentsForPost } from '../http/hooks/useGetCommentsForPost';
 
 export interface Comment {
-    id: number;
-    postId: number;
-    name: string;
-    email: string;
-    body: string;
+  id: number;
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
 }
 
 const Comments = () => {
   const { id } = useParams<{ id: string }>();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
 
+  const getCommentsForPostAPI = useGetCommentsForPost();
   useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true);
-      setError("");
+    if (!id) return;
 
-      try {
-        const res = await fetch(
-          `https://jsonplaceholder.typicode.com/posts/${id}/comments`
-        );
-        if (!res.ok) throw new Error("Failed to load comments");
-
-        const data: Comment[] = await res.json();
-        setComments(data);
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Something went wrong";
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchComments();
-    }
+    getCommentsForPostAPI
+      .request<Comment[]>({ postId: id })
+      .then(({ data }) => {
+        if (data) setComments(data);
+      })
   }, [id]);
 
-  if (loading) return <p>Loading....</p>;
+  if (getCommentsForPostAPI.isLoading) return <p>Loading....</p>;
 
-  if (error) return <p className="comments-error">⚠️ Error: {error}</p>;
+  if (getCommentsForPostAPI.error) {
+    return (
+      <p className="comments-error">
+        ⚠️ Error: {getCommentsForPostAPI.error}
+      </p>
+    );
+  }
 
   return (
     <div className="comments-wrapper">
