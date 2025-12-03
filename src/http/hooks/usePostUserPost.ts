@@ -1,3 +1,4 @@
+import { SubmitResponse } from "../../pages/Submit";
 import { HookProps, useRequest } from "../core/useRequest";
 import { apiPaths } from "../endpoints";
 
@@ -8,8 +9,8 @@ interface RequestProps {
 export function usePostUserPost(props?: HookProps) {
   const requestAPI = useRequest(props ?? {});
 
-  const request = async <D>(props: RequestProps) => {
-    const response = await requestAPI.request<D>({
+  const request = async (props: RequestProps) => {
+    const response = await requestAPI.request<SubmitResponse>({
       method: "POST",
       url: apiPaths.posts.get(),
       body: props.body,

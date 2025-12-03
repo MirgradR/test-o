@@ -1,7 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
-import { usePostUserPost } from '../http/hooks/usePostUserPost';
+import { usePostUserPost, } from '../http/hooks';
 
-interface SubmitResponse {
+export interface SubmitResponse {
   id: number;
   title: string;
   body: string;
@@ -18,7 +18,7 @@ const Submit = () => {
     setResponse(null);
 
     postUserPostAPI
-      .request<SubmitResponse>({ body: form })
+      .request({ body: form })
       .then(({ data }) => {
         if (data) setResponse(data);
       })

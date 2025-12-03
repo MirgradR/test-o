@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useGetCommentsForPost } from '../http/hooks/useGetCommentsForPost';
+import { useGetCommentsForPost } from '../http/hooks';
 
 export interface Comment {
   id: number;
@@ -19,7 +19,7 @@ const Comments = () => {
     if (!id) return;
 
     getCommentsForPostAPI
-      .request<Comment[]>({ postId: id })
+      .request({ postId: id })
       .then(({ data }) => {
         if (data) setComments(data);
       })

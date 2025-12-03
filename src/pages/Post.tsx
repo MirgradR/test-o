@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import { useGetPostById } from '../http/hooks/useGetPostById';
+import { useGetPostById } from '../http/hooks';
 
 export interface Post {
   id: number;
@@ -20,7 +20,7 @@ const PostPage = () => {
     if (!id) return;
 
     getPostByIdAPI
-      .request<Post>({ postId: id })
+      .request({ postId: id })
       .then(({ data }) => {
         if (data) setPost(data);
       })

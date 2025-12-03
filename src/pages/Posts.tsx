@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
 import { SunIcon } from '../components/icons/SunIcon';
 import { CountIcon } from '../components/icons/CountIcon';
-import { useGetAllPosts } from '../http/hooks/useGetAllPosts';
+import { useGetAllPosts } from '../http/hooks';
 
 const Posts = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Posts = () => {
 
   useEffect(() => {
     getAllPostsAPI
-      .request<Post[]>({ search })
+      .request({ search })
       .then(({ data }) => {
         if (data) setPosts(data);
       })
