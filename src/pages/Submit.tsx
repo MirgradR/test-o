@@ -1,4 +1,5 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
+import { usePostUserPost } from '../http/hooks/usePostUserPost';
 
 interface SubmitResponse {
   id: number;
@@ -9,38 +10,18 @@ interface SubmitResponse {
 
 const Submit = () => {
   const [form, setForm] = useState<{ title: string; body: string }>({ title: "", body: "" });
-  const [loading, setLoading] = useState<boolean>(false);
   const [response, setResponse] = useState<SubmitResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const postUserPostAPI = usePostUserPost();
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setResponse(null);
-    setError(null);
 
-    try {
-      const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        throw new Error("Server error");
-      }
-
-      const data: SubmitResponse = await res.json();
-      setResponse(data);
-      setForm({ title: "", body: "" });
-    } catch (err) {
-      setError("Failed to send post. Try again.");
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+    postUserPostAPI
+      .request<SubmitResponse>({ body: form })
+      .then(({ data }) => {
+        if (data) setResponse(data);
+      })
   };
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +36,9 @@ const Submit = () => {
     <section className="container">
       <h2>Submit your post</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+      >
         <input
           type="text"
           placeholder="Title"
@@ -71,8 +54,8 @@ const Submit = () => {
           required
         />
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Sending..." : "Send"}
+        <button type="submit" disabled={postUserPostAPI.isLoading}>
+          {postUserPostAPI.isLoading ? "Sending..." : "Send"}
         </button>
       </form>
 
@@ -82,7 +65,11 @@ const Submit = () => {
         </p>
       )}
 
-      {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+      {postUserPostAPI.error && (
+        <p style={{ color: "red", marginTop: "1rem" }}>
+          {postUserPostAPI.error}
+        </p>
+      )}
     </section>
   );
 };
