@@ -5,8 +5,9 @@ import { Post } from "./Post";
 import { SunIcon } from '../components/icons/SunIcon';
 import { CountIcon } from '../components/icons/CountIcon';
 import { useGetAllPosts } from '../http/hooks';
+import { EnrichProps, withUsers } from '../hoc/withUsers';
 
-const Posts = () => {
+const Posts = ({ users }: EnrichProps) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
@@ -103,5 +104,5 @@ function HightlightBtn({ onClick, paintIcon }: HightlightBtnProps) {
   );
 }
 
-export default Posts;
-
+const PostsWithUsers = withUsers(Posts);
+export default PostsWithUsers;
