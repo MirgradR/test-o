@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { User } from '../http/hooks';
 import { Post } from "../pages/Post";
 import clsx from 'clsx';
@@ -12,18 +12,21 @@ interface PostCardProps {
 
 const PostCard = ({ post, user, onClick, highlight = false }: PostCardProps) => {
 
-  let fullAddress = 'Russia';
-  if (user) {
-    const chars = user.name.length;
+  const fullAddress = useMemo(() => {
+    if (!user) return "Russia";
 
-    if (chars <= 5) {
-      fullAddress = user.address.city + user.address.street;
-    } else if (chars > 5 && chars <= 10) {
-      fullAddress = user.address.geo.lat + user.address.geo.lng;
-    } else {
-      fullAddress = user.address.suite + user.address.zipcode;
+    const { name, address } = user;
+
+    if (name.length <= 5) {
+      return `${address.city} ${address.street}`;
     }
-  }
+
+    if (name.length <= 10) {
+      return `${address.geo.lat} ${address.geo.lng}`;
+    }
+
+    return `${address.suite} ${address.zipcode}`;
+  }, [user]);
 
   return (
     <article
