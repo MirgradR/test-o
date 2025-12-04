@@ -1,13 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
+import { JSX, lazy, Suspense } from 'react';
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
-import Posts from "./pages/Posts";
-import PostPage from "./pages/Post";
 import ProtectPost from "./components/ProtectPost";
 import NotFound from "./pages/NotFound";
-import Comments from "./pages/Comments";
 import About from "./pages/About";
-import Submit from "./pages/Submit";
+const PostsLazy = lazy(() => import("./pages/Posts"));
+const PostPageLazy = lazy(() => import("./pages/Post"));
+const CommentsLazy = lazy(() => import("./pages/Comments"));
+const SubmitLazy = lazy(() => import("./pages/Submit"));
+
+const lazyElement = (component: JSX.Element) => (
+  <Suspense fallback={<div>Loading...</div>}>{component}</Suspense>
+);
 
 export const router = createBrowserRouter([
   {
@@ -18,25 +23,25 @@ export const router = createBrowserRouter([
       {
         path: "posts",
         children: [
-          { index: true, element: <Posts /> }, // список постов
+          { index: true, element: lazyElement(<PostsLazy />) },
           {
             path: ":id",
             element: (
               <ProtectPost>
-                <PostPage />
+                {lazyElement(<PostPageLazy />)}
               </ProtectPost>
             ),
             children: [
               {
                 path: "comments",
-                element: <Comments />,
+                element: lazyElement(<CommentsLazy />),
               },
             ],
           },
         ],
       },
       { path: "about", element: <About /> },
-      { path: "submit", element: <Submit /> },
+      { path: "submit", element: lazyElement(<SubmitLazy />) },
       { path: "*", element: <NotFound /> },
     ],
   },
