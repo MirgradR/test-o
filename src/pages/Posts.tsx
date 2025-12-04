@@ -6,6 +6,7 @@ import { SunIcon } from '../components/icons/SunIcon';
 import { CountIcon } from '../components/icons/CountIcon';
 import { useGetAllPosts } from '../http/hooks';
 import { EnrichProps, withUsers } from '../hoc/withUsers';
+import { useBindPostUserIds } from '../hooks/useBindPostUserIds';
 
 const Posts = ({ users }: EnrichProps) => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Posts = ({ users }: EnrichProps) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [hightlightPosts, setHightlightPosts] = useState(false);
   const [showPostsCount, setShowPostsCount] = useState(false);
+  const bindedPostUserIds = useBindPostUserIds(posts, users);
 
   const getAllPostsAPI = useGetAllPosts();
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,11 +76,13 @@ const Posts = ({ users }: EnrichProps) => {
         ) : (
           posts.map((post, idx) => {
             const isOddPost = idx % 2 === 0;
+            const user = users.find(u => u.id == +bindedPostUserIds[post.id]);
 
             return (
               <PostCard
                 key={post.id}
                 post={post}
+                user={user}
                 highlight={isOddPost && hightlightPosts}
                 onClick={() => navigate(`/posts/${post.id}/comments`)}
               />

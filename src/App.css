@@ -195,6 +195,27 @@ a:hover {
   box-shadow: 0 4px 10px var(--post-card-shadow-strong);
 }
 
+.post-card-user {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  line-height: 1rem;
+
+  /* имя */
+  & > span:nth-child(1) {
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1rem;
+  }
+
+  /* адрес */
+  & > span:nth-child(2) {
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 0.8rem;
+  }
+}
+
 /* ============ Поиск ============ */
 
 .search-input {
