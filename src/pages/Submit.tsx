@@ -1,6 +1,41 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { usePostUserPost, } from '../http/hooks';
 
+const Input = (
+  props: {
+    value: string;
+    onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  }
+) => (
+  <input
+    type="text"
+    placeholder="Title"
+    value={props.value}
+    onChange={props.onChange}
+    required
+  />
+);
+
+const TextArea = (
+  props: {
+    value: string;
+    onChange: (evt: ChangeEvent<HTMLTextAreaElement>) => void;
+  }
+) => (
+  <textarea
+    placeholder="Post content"
+    value={props.value}
+    onChange={props.onChange}
+    required
+  />
+);
+
+const Button = (props: { isLoading: boolean }) => (
+  <button type="submit" disabled={props.isLoading}>
+    {props.isLoading ? "Sending..." : "Send"}
+  </button>
+);
+
 export interface SubmitResponse {
   id: number;
   title: string;
@@ -39,24 +74,19 @@ const Submit = () => {
       <form
         onSubmit={handleSubmit}
       >
-        <input
-          type="text"
-          placeholder="Title"
+        <Input
           value={form.title}
           onChange={handleTitleChange}
-          required
         />
 
-        <textarea
-          placeholder="Post content"
+        <TextArea
           value={form.body}
           onChange={handleBodyChange}
-          required
         />
 
-        <button type="submit" disabled={postUserPostAPI.isLoading}>
-          {postUserPostAPI.isLoading ? "Sending..." : "Send"}
-        </button>
+        <Button
+          isLoading={postUserPostAPI.isLoading}
+        />
       </form>
 
       {response && (
