@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
+import React, { useEffect, useState, ChangeEvent, useCallback, Suspense, lazy } from "react";
 import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
@@ -7,6 +7,12 @@ import { useGetAllPosts } from '../http/hooks';
 import { EnrichProps, withUsers } from '../hoc/withUsers';
 import { useBindPostUserIds } from '../hooks/useBindPostUserIds';
 import HightlightBtn from '../components/HightlightBtn';
+import LazyOnView from '../components/LazyOnView';
+
+const PostsBannerLazy = lazy(async () => {
+  await new Promise(res => setTimeout(res, 1500));
+  return await import("../components/PostsBanner");
+});
 
 const Posts = ({ users }: EnrichProps) => {
   const navigate = useNavigate();
@@ -92,6 +98,14 @@ const Posts = ({ users }: EnrichProps) => {
           })
         )}
       </section>
+
+      {Boolean(posts.length) && (
+        <LazyOnView>
+          <Suspense fallback={<div>Loading banner...</div>}>
+            <PostsBannerLazy />
+          </Suspense>
+        </LazyOnView>
+      )}
     </div>
   );
 };
