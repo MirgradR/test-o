@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useGetPostById } from '../http/hooks';
+import { PostUser } from '../components/PostUser';
 
 export interface Post {
   id: number;
@@ -41,6 +42,8 @@ const PostPage = () => {
       <button onClick={() => navigate(-1)} style={{ marginBottom: "1rem" }}>
         ← Back
       </button>
+
+      <PostUser postId={id} />
 
       <h2>{post.title}</h2>
       <p>{post.body}</p>
