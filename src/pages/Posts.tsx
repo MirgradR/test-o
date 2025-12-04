@@ -1,12 +1,12 @@
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, useCallback } from "react";
 import PostCard from "../components/PostCard";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Post } from "./Post";
-import { SunIcon } from '../components/icons/SunIcon';
 import { CountIcon } from '../components/icons/CountIcon';
 import { useGetAllPosts } from '../http/hooks';
 import { EnrichProps, withUsers } from '../hoc/withUsers';
 import { useBindPostUserIds } from '../hooks/useBindPostUserIds';
+import HightlightBtn from '../components/HightlightBtn';
 
 const Posts = ({ users }: EnrichProps) => {
   const navigate = useNavigate();
@@ -23,6 +23,8 @@ const Posts = ({ users }: EnrichProps) => {
     const value = e.target.value;
     setSearchParams(value ? { search: value } : {});
   };
+
+  const toggleHighlight = useCallback(() => setHightlightPosts(p => !p), [])
 
   useEffect(() => {
     getAllPostsAPI
@@ -57,7 +59,7 @@ const Posts = ({ users }: EnrichProps) => {
         />
 
         <HightlightBtn
-          onClick={() => setHightlightPosts(p => !p)}
+          onClick={toggleHighlight}
           paintIcon={hightlightPosts}
         />
 
@@ -93,20 +95,6 @@ const Posts = ({ users }: EnrichProps) => {
     </div>
   );
 };
-
-interface HightlightBtnProps {
-  onClick: () => void;
-  paintIcon?: boolean;
-}
-
-function HightlightBtn({ onClick, paintIcon }: HightlightBtnProps) {
-
-  return React.createElement(
-    'button',
-    { onClick },
-    React.createElement(SunIcon, { color: paintIcon ? 'lightgreen' : 'white' })
-  );
-}
 
 const PostsWithUsers = withUsers(Posts);
 export default PostsWithUsers;
