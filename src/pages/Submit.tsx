@@ -1,7 +1,7 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import { usePostUserPost, } from '../http/hooks';
 
-const Input = (
+const Input = React.memo((
   props: {
     value: string;
     onChange: (evt: ChangeEvent<HTMLInputElement>) => void;
@@ -14,9 +14,9 @@ const Input = (
     onChange={props.onChange}
     required
   />
-);
+));
 
-const TextArea = (
+const TextArea = React.memo((
   props: {
     value: string;
     onChange: (evt: ChangeEvent<HTMLTextAreaElement>) => void;
@@ -28,13 +28,13 @@ const TextArea = (
     onChange={props.onChange}
     required
   />
-);
+));
 
-const Button = (props: { isLoading: boolean }) => (
+const Button = React.memo((props: { isLoading: boolean }) => (
   <button type="submit" disabled={props.isLoading}>
     {props.isLoading ? "Sending..." : "Send"}
   </button>
-);
+));
 
 export interface SubmitResponse {
   id: number;
@@ -59,13 +59,13 @@ const Submit = () => {
       })
   };
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, title: e.target.value });
-  };
+  const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setForm(prev => ({ ...prev, title: e.target.value }));
+  }, []);
 
-  const handleBodyChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setForm({ ...form, body: e.target.value });
-  };
+  const handleBodyChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+    setForm(prev => ({ ...prev, body: e.target.value }));
+  }, []);
 
   return (
     <section className="container">
