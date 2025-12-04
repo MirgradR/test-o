@@ -1,3 +1,4 @@
+import React from 'react';
 import { User } from '../http/hooks';
 import { Post } from "../pages/Post";
 import clsx from 'clsx';
@@ -43,5 +44,13 @@ const PostCard = ({ post, user, onClick, highlight = false }: PostCardProps) => 
   );
 };
 
-export default PostCard;
+export default React.memo(PostCard, (prevProps, nextProps) => {
+  const isSameProps =
+    prevProps.post === nextProps.post &&
+    prevProps.user === nextProps.user &&
+    prevProps.highlight === nextProps.highlight &&
+    prevProps.onClick.toString() === nextProps.onClick.toString()
+
+  return isSameProps;
+});
 
