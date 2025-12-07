@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useGetAllUsers, User } from '../http/hooks';
 
-export interface EnrichProps {
+export interface WithUsersProps {
   users: User[];
 }
 
-export function withUsers<T>(Component: React.ComponentType<T & EnrichProps>) {
+export function withUsers<T>(Component: React.ComponentType<T & WithUsersProps>) {
   return function Wrapper(props: T) {
     const [users, setUsers] = useState<User[]>([]);
 

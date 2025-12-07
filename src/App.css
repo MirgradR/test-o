@@ -155,9 +155,32 @@ a:hover {
   align-items: center;
   gap: 1rem;
   margin-bottom: 2rem;
+
+  & > button {
+    width: 4rem;
+    height: 2.5rem;
+  }
+}
+
+.posts-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+
+  & > button {
+    width: 10rem;
+    height: 3rem;
+
+    &[data-active="true"] {
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6) inset;
+    }
+  }
 }
 
 .post-card {
+  position: relative;
+  height: 100%;
   background: var(--card-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -216,6 +239,51 @@ a:hover {
   }
 }
 
+.post-removing {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+
+  & > p {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+}
+
+.post-card-delete {
+  background-color: red;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.2rem;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+
+  &:hover {
+    background-color: red;
+    opacity: 0.6;
+  }
+}
+
+.post-banner {
+  background: "var(--color-primary)";
+  height: "5rem";
+  border-radius: "1rem";
+  margin-top: "2rem";
+  display: "grid";
+  place-items: "center";
+
+  & > p {
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.1rem;
+  }
+}
+
 /* ============ Поиск ============ */
 
 .search-input {
@@ -270,7 +338,9 @@ a:hover {
   border: none;
   border-radius: 50%;
   width: 2rem;
-  height: 2rem;
+  min-width: 2rem;
+  aspect-ratio: 1/1;
+  padding: 0;
   cursor: pointer;
 }
 

@@ -1,114 +1,60 @@
-import React, { useEffect, useState, ChangeEvent, useCallback, Suspense, lazy } from "react";
-import PostCard from "../components/PostCard";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Post } from "./Post";
-import { CountIcon } from '../components/icons/CountIcon';
-import { useGetAllPosts } from '../http/hooks';
-import { EnrichProps, withUsers } from '../hoc/withUsers';
-import { useBindPostUserIds } from '../hooks/useBindPostUserIds';
-import HightlightBtn from '../components/HightlightBtn';
-import LazyOnView from '../components/LazyOnView';
+import React, { useState, Suspense, lazy } from "react";
+import { useSearchParams } from "react-router-dom";
+import { PostsTabs } from '../configs/postsTabs';
 
-const PostsBannerLazy = lazy(async () => {
-  await new Promise(res => setTimeout(res, 1500));
-  return await import("../components/PostsBanner");
-});
+const AllPostsLazy = lazy(() => import('../components/posts/AllPosts'));
+const UserPostsLazy = lazy(() => import('../components/posts/UserPosts'));
 
-const Posts = ({ users }: EnrichProps) => {
-  const navigate = useNavigate();
+const Posts = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => {
+    const tab = searchParams.get("tab");
+    const isCorrect = tab === PostsTabs.ALL || tab === PostsTabs.MY;
+    return isCorrect ? tab : PostsTabs.ALL;
+  })
+
   const search = searchParams.get("search") || "";
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [hightlightPosts, setHightlightPosts] = useState(false);
-  const [showPostsCount, setShowPostsCount] = useState(false);
-  const bindedPostUserIds = useBindPostUserIds(posts, users);
-
-  const getAllPostsAPI = useGetAllPosts();
-  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchParams(value ? { search: value } : {});
-  };
-
-  const toggleHighlight = useCallback(() => setHightlightPosts(p => !p), [])
-
-  useEffect(() => {
-    getAllPostsAPI
-      .request({ search })
-      .then(({ data }) => {
-        if (data) setPosts(data);
-      })
-  }, [search]);
-
-  if (getAllPostsAPI.error) {
-    return (
-      <p style={{ color: "red" }}>
-        {getAllPostsAPI.error}
-      </p>
-    );
-  }
+  const isAllTab = activeTab === PostsTabs.ALL;
+  const isUserTab = activeTab === PostsTabs.MY;
 
   return (
     <div className="container">
-      <h2>
-        {showPostsCount && `${posts.length} - `}
-        Последние посты
-      </h2>
-
-      <div className='posts-interactive'>
-        <input
-          type="text"
-          placeholder="Search posts..."
-          className="search-input"
-          value={search}
-          onChange={handleSearch}
-        />
-
-        <HightlightBtn
-          onClick={toggleHighlight}
-          paintIcon={hightlightPosts}
-        />
-
-        <button onClick={() => setShowPostsCount(p => !p)}>
-          <CountIcon color={showPostsCount ? 'lightgreen' : 'white'} />
+      <div className='posts-tabs'>
+        <button
+          onClick={() => {
+            setActiveTab(PostsTabs.ALL);
+            setSearchParams({ search, tab: PostsTabs.ALL, })
+          }}
+          data-active={isAllTab}
+        >
+          ВСЕ
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab(PostsTabs.MY)
+            setSearchParams({ search, tab: PostsTabs.MY })
+          }}
+          data-active={isUserTab}
+        >
+          МОИ
         </button>
       </div>
 
-      <section className="posts">
-        {posts.length === 0 && !getAllPostsAPI.isLoading && (
-          <p style={{ marginTop: "1rem", color: "#888" }}>No posts found</p>
-        )}
-
-        {getAllPostsAPI.isLoading ? (
-          <p>Loading....</p>
-        ) : (
-          posts.map((post, idx) => {
-            const isOddPost = idx % 2 === 0;
-            const user = users.find(u => u.id == +bindedPostUserIds[post.id]);
-
-            return (
-              <PostCard
-                key={post.id}
-                post={post}
-                user={user}
-                highlight={isOddPost && hightlightPosts}
-                onClick={() => navigate(`/posts/${post.id}/comments`)}
-              />
-            )
-          })
-        )}
-      </section>
-
-      {Boolean(posts.length) && (
-        <LazyOnView>
-          <Suspense fallback={<div>Loading banner...</div>}>
-            <PostsBannerLazy />
+      <div>
+        {isAllTab && (
+          <Suspense fallback={<div>All posts loading...</div>}>
+            <AllPostsLazy />
           </Suspense>
-        </LazyOnView>
-      )}
+        )}
+
+        {isUserTab && (
+          <Suspense fallback={<div>My posts loading...</div>}>
+            <UserPostsLazy />
+          </Suspense>
+        )}
+      </div>
     </div>
   );
 };
 
-const PostsWithUsers = withUsers(Posts);
-export default PostsWithUsers;
+export default Posts;

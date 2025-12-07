@@ -1,5 +1,6 @@
 export enum StorageKeys {
-  BINDED_POSTID_USER_ID = "BINDED_POSTID_USER_ID",
+  REMOVED_POSTS_IDS = "REMOVED_POSTS_IDS",
+  CREATED_POSTS = "CREATED_POSTS",
 }
 
 export function loadJSON<T>(key: StorageKeys, fallback: T): T {
@@ -14,7 +15,9 @@ export function loadJSON<T>(key: StorageKeys, fallback: T): T {
 export function saveJSON<T>(key: StorageKeys, value: T) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch (err) {
     console.error(err);
+    return false;
   }
 }

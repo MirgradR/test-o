@@ -1,4 +1,5 @@
 import { type Post } from "../../pages/Post";
+import { getRemovedPostsIds } from "../../utils/storage/removedPostsAPI";
 import { HookProps, useRequest } from "../core/useRequest";
 import { apiPaths } from "../endpoints";
 
@@ -16,7 +17,13 @@ export function useGetAllPosts(props?: HookProps) {
       params: { q: props.search },
     });
 
-    return response;
+    if (!response.data?.length || response.error) {
+      return response;
+    }
+
+    const removedPostsIds = getRemovedPostsIds();
+    const existPosts = response.data.filter((p) => !removedPostsIds.includes(p.id));
+    return { data: existPosts, error: "" };
   };
 
   return {

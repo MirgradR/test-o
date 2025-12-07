@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useGetPostById } from '../http/hooks';
-import { PostUser } from '../components/PostUser';
+import PostUser from '../components/posts/PostUser';
 
 export interface Post {
   id: number;
@@ -25,6 +25,8 @@ const PostPage = () => {
       .then(({ data }) => {
         if (data) setPost(data);
       })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (getPostByIdAPI.isLoading) return <p>Loading....</p>;
@@ -43,7 +45,7 @@ const PostPage = () => {
         ← Back
       </button>
 
-      <PostUser postId={id} />
+      <PostUser userId={post.userId} />
 
       <h2>{post.title}</h2>
       <p>{post.body}</p>
