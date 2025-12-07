@@ -16,25 +16,22 @@ const PostPage = () => {
 
   const [post, setPost] = useState<Post | null>(null);
 
-  const getPostByIdAPI = useGetPostById();
+  const { isLoading, error, request } = useGetPostById();
   useEffect(() => {
     if (!id) return;
 
-    getPostByIdAPI
-      .request({ postId: id })
+    request({ postId: id })
       .then(({ data }) => {
         if (data) setPost(data);
       })
+  }, [id, request]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
-
-  if (getPostByIdAPI.isLoading) return <p>Loading....</p>;
+  if (isLoading) return <p>Loading....</p>;
   if (!post) return <p>Post not found</p>;
-  if (getPostByIdAPI.error) {
+  if (error) {
     return (
       <p style={{ color: "red", fontSize: "1.1rem" }}>
-        ⚠️ Error: {getPostByIdAPI.error}
+        ⚠️ Error: {error}
       </p>
     );
   }

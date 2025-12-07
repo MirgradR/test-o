@@ -3,17 +3,17 @@ import { useDeletePost } from '../../../http/hooks';
 import PostCard, { PostCardProps } from './PostCard';
 
 const PostCardAllWrapper = (props: PostCardProps) => {
-  const deletePostAPI = useDeletePost();
+  const { isLoading, request } = useDeletePost();
+  const { post, onDelete } = props;
+  const postId = post.id;
 
   const deletePost = useCallback(() => {
-    deletePostAPI
-      .request({ postId: props.post.id })
+    request({ postId })
       .then(({ removedId }) => {
-        props.onDelete(removedId)
+        onDelete(removedId)
       })
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [request, postId, onDelete])
 
   return (
     <div
@@ -24,7 +24,7 @@ const PostCardAllWrapper = (props: PostCardProps) => {
         onDelete={deletePost}
       />
 
-      {deletePostAPI.isLoading && (
+      {isLoading && (
         <div className='post-removing'>
           <p>
             REMOVING POST...

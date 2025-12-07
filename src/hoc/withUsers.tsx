@@ -9,14 +9,13 @@ export function withUsers<T>(Component: React.ComponentType<T & WithUsersProps>)
   return function Wrapper(props: T) {
     const [users, setUsers] = useState<User[]>([]);
 
-    const getAllUsersAPI = useGetAllUsers();
+    const { request } = useGetAllUsers();
     useEffect(() => {
-      getAllUsersAPI
-        .request()
+      request()
         .then(({ data }) => {
           if (data) setUsers(data);
         })
-    }, []);
+    }, [request]);
 
     return <Component {...props} users={users} />;
   };

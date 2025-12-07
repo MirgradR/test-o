@@ -1,16 +1,16 @@
-import { loadJSON, saveJSON, StorageKeys } from "./core";
+import { StorageKeys } from "../../configs/storageKeys";
 
 const key = StorageKeys.REMOVED_POSTS_IDS;
 
 /** Добавить ID удаленного поста в LocalStorage */
 export function addRemovedPost(postId: number) {
-  const exist: string[] = loadJSON(key, []);
+  const exist: string[] = JSON.parse(localStorage.getItem(key) ?? "[]");
   const next = exist.concat(String(postId));
-  return saveJSON(StorageKeys.REMOVED_POSTS_IDS, next);
+  localStorage.setItem(key, JSON.stringify(next));
 }
 
 /** Получить все ID удаленных постов */
 export function getRemovedPostsIds() {
-  const exist: string[] = loadJSON(key, []);
+  const exist: string[] = JSON.parse(localStorage.getItem(key) ?? "[]");
   return exist.map(Number);
 }

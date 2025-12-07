@@ -1,4 +1,4 @@
-import { type Post } from "../../pages/Post";
+import { useCallback } from "react";
 import { HookProps, useRequest } from "../core/useRequest";
 import { apiPaths } from "../endpoints";
 
@@ -31,19 +31,19 @@ interface RequestProps {
 }
 
 export function useGetUserById(props?: HookProps) {
-  const requestAPI = useRequest(props ?? {});
+  const { request: coreRequest, ...api } = useRequest(props ?? {});
 
-  const request = async (props: RequestProps) => {
-    const response = await requestAPI.request<User>({
-      method: "GET",
-      url: apiPaths.user.get(props.userId),
-    });
+  const request = useCallback(
+    async (props: RequestProps) => {
+      const response = await coreRequest<User>({
+        method: "GET",
+        url: apiPaths.user.get(props.userId),
+      });
 
-    return response;
-  };
+      return response;
+    },
+    [coreRequest]
+  );
 
-  return {
-    ...requestAPI,
-    request,
-  };
+  return { ...api, request };
 }

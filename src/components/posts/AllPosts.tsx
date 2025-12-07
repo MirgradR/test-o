@@ -17,15 +17,14 @@ const PostsBannerLazy = lazy(async () => {
 
 const AllPosts = ({ users }: WithUsersProps) => {
   const navigate = useNavigate();
-  const getAllPostsAPI = useGetAllPosts();
+  const { isLoading, error, request } = useGetAllPosts();
   const [searchParams, setSearchParams] = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([])
   const [hightlightPosts, setHightlightPosts] = useState(false);
   const [showPostsCount, setShowPostsCount] = useState(false);
 
   const search = searchParams.get("search") || "";
-  const isLoading = getAllPostsAPI.isLoading;
-  const isError = !isLoading && Boolean(getAllPostsAPI.error);
+  const isError = !isLoading && Boolean(error);
   const isEmpty = !isLoading && !posts.length;
 
   const toggleHighlight = useCallback(() => setHightlightPosts(p => !p), [])
@@ -55,14 +54,12 @@ const AllPosts = ({ users }: WithUsersProps) => {
   }, [])
 
   useEffect(() => {
-    getAllPostsAPI
-      .request({ search })
+    request({ search })
       .then(({ data }) => {
         if (data) setPosts(data);
       })
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  }, [search, request]);
 
   return (
     <section>
@@ -103,7 +100,7 @@ const AllPosts = ({ users }: WithUsersProps) => {
 
         {isError && (
           <p style={{ color: "red" }}>
-            {getAllPostsAPI.error}
+            {error}
           </p>
         )}
 

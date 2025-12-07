@@ -3,13 +3,13 @@ import PostCard, { PostCardProps } from './PostCard';
 import { removeUserPost } from '../../../utils/storage/createdPostsAPI';
 
 const PostCardUserWrapper = (props: PostCardProps) => {
+  const { onDelete } = props;
+  const postId = props.post.id;
 
   const deletePost = useCallback(() => {
-    removeUserPost({ userPostId: props.post.id });
-    props.onDelete(props.post.id)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    removeUserPost({ userPostId: postId });
+    onDelete(postId)
+  }, [onDelete, postId])
 
   return (
     <PostCard

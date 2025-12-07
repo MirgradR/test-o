@@ -49,20 +49,16 @@ interface ProviderProps {
 function PostUserProvider({ userId, children }: ProviderProps) {
   const [user, setUser] = useState<User>();
 
-  const getUserByIdAPI = useGetUserById();
+  const { isLoading, request } = useGetUserById();
   useEffect(() => {
-    getUserByIdAPI.request({ userId })
+    request({ userId })
       .then(({ data }) => {
         if (data) setUser(data)
       })
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId])
+  }, [userId, request])
 
-  return children({
-    isInitializing: getUserByIdAPI.isLoading,
-    user
-  })
+  return children({ isInitializing: isLoading, user })
 }
 
 export default PostUser;

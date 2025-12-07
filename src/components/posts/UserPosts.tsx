@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { PlusIcon } from '../icons/PlusIcon';
 import HightlightBtn from './HightlightBtn';
 import { CountIcon } from '../icons/CountIcon';
-import { getUserPosts } from '../../utils/storage/createdPostsAPI';
 import PostCardUserWrapper from './cards/PostCardUserWrapper';
+import { getUserPosts } from '../../utils/storage/createdPostsAPI';
 
 const user = {
   name: 'Anton Nazarov',

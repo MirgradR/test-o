@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { SubmitResponse } from "../../pages/Submit";
 import { HookProps, useRequest } from "../core/useRequest";
 import { apiPaths } from "../endpoints";
@@ -7,20 +8,20 @@ interface RequestProps {
 }
 
 export function usePostUserPost(props?: HookProps) {
-  const requestAPI = useRequest(props ?? {});
+  const { request: coreRequest, ...api } = useRequest(props ?? {});
 
-  const request = async (props: RequestProps) => {
-    const response = await requestAPI.request<SubmitResponse>({
-      method: "POST",
-      url: apiPaths.posts.get(),
-      body: props.body,
-    });
+  const request = useCallback(
+    async (props: RequestProps) => {
+      const response = await coreRequest<SubmitResponse>({
+        method: "POST",
+        url: apiPaths.posts.get(),
+        body: props.body,
+      });
 
-    return response;
-  };
+      return response;
+    },
+    [coreRequest]
+  );
 
-  return {
-    ...requestAPI,
-    request,
-  };
+  return { ...api, request };
 }

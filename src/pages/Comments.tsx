@@ -14,23 +14,22 @@ const Comments = () => {
   const { id } = useParams<{ id: string }>();
   const [comments, setComments] = useState<Comment[]>([]);
 
-  const getCommentsForPostAPI = useGetCommentsForPost();
+  const { isLoading, error, request } = useGetCommentsForPost();
   useEffect(() => {
     if (!id) return;
 
-    getCommentsForPostAPI
-      .request({ postId: id })
+    request({ postId: id })
       .then(({ data }) => {
         if (data) setComments(data);
       })
-  }, [id]);
+  }, [id, request]);
 
-  if (getCommentsForPostAPI.isLoading) return <p>Loading....</p>;
+  if (isLoading) return <p>Loading....</p>;
 
-  if (getCommentsForPostAPI.error) {
+  if (error) {
     return (
       <p className="comments-error">
-        ⚠️ Error: {getCommentsForPostAPI.error}
+        ⚠️ Error: {error}
       </p>
     );
   }

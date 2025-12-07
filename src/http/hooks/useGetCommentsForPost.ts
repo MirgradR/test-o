@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { type Comment } from "../../pages/Comments";
 import { HookProps, useRequest } from "../core/useRequest";
 import { apiPaths } from "../endpoints";
@@ -7,19 +8,19 @@ interface RequestProps {
 }
 
 export function useGetCommentsForPost(props?: HookProps) {
-  const requestAPI = useRequest(props ?? {});
+  const { request: coreRequest, ...api } = useRequest(props ?? {});
 
-  const request = async (props: RequestProps) => {
-    const response = await requestAPI.request<Comment[]>({
-      method: "GET",
-      url: apiPaths.postComments.get(props.postId),
-    });
+  const request = useCallback(
+    async (props: RequestProps) => {
+      const response = await coreRequest<Comment[]>({
+        method: "GET",
+        url: apiPaths.postComments.get(props.postId),
+      });
 
-    return response;
-  };
+      return response;
+    },
+    [coreRequest]
+  );
 
-  return {
-    ...requestAPI,
-    request,
-  };
+  return { ...api, request };
 }

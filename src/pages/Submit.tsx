@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent, useCallback } from "react";
 import { usePostUserPost, } from '../http/hooks';
-import { createUserPost } from '../utils/storage/createdPostsAPI';
 import { siteUserId } from '../configs/userId';
 import { useNavigate } from 'react-router-dom';
 import { PostsTabs } from '../configs/postsTabs';
+import { createUserPost } from '../utils/storage/createdPostsAPI';
 
 const Input = React.memo((
   props: {
@@ -50,7 +50,6 @@ const Submit = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState<{ title: string; body: string }>({ title: "", body: "" });
   const [response, setResponse] = useState<SubmitResponse | null>(null);
-  const [storageError, setStorageError] = useState('')
 
   const clearForm = useCallback(() => setForm({ title: '', body: '' }), [])
 
@@ -59,28 +58,23 @@ const Submit = () => {
       const { title, body } = data;
       const id = Date.now();
 
-      const isSuccess = createUserPost({
+      createUserPost({
         userPost: { title, body, id, userId: siteUserId }
       })
 
-      if (isSuccess) setResponse({ title, body, id })
-      else setStorageError('Failed to save data');
-
-      return isSuccess;
+      setResponse({ title, body, id })
     }, [])
 
-  const postUserPostAPI = usePostUserPost();
+  const { isLoading, error, request } = usePostUserPost();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setResponse(null);
-    setStorageError('')
 
-    postUserPostAPI
-      .request({ body: form })
+    request({ body: form })
       .then(({ data }) => {
         if (!data) return;
-        const isSuccess = saveResponse(data);
-        if (isSuccess) clearForm();
+        saveResponse(data);
+        clearForm();
       })
   };
 
@@ -91,8 +85,6 @@ const Submit = () => {
   const handleBodyChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, body: e.target.value }));
   }, []);
-
-  const saveError = postUserPostAPI.error || storageError;
 
   return (
     <section className="container">
@@ -112,7 +104,7 @@ const Submit = () => {
         />
 
         <Button
-          isLoading={postUserPostAPI.isLoading}
+          isLoading={isLoading}
         />
       </form>
 
@@ -135,9 +127,9 @@ const Submit = () => {
         </p>
       )}
 
-      {Boolean(saveError) && (
+      {Boolean(error) && (
         <p style={{ color: "red", marginTop: "1rem" }}>
-          {saveError}
+          {error}
         </p>
       )}
     </section>

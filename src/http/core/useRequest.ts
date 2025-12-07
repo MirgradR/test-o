@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { addParamsToUrl } from "./addParamsToUrl";
 
 const conf = {
@@ -27,7 +27,7 @@ export function useRequest({ initLoading = false }: HookProps) {
 
   const clearError = () => setError("");
 
-  const request = async <D>(props: RequestProps): Promise<RequestResponse<D>> => {
+  const request = useCallback(async <D>(props: RequestProps): Promise<RequestResponse<D>> => {
     setIsLoading(true);
     setError("");
 
@@ -51,7 +51,7 @@ export function useRequest({ initLoading = false }: HookProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   return {
     clearError,
